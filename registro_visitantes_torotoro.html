@@ -336,6 +336,8 @@
     <button type="button" class="otro" id="btnOtro" data-t="otroGrupo">Registrar otro grupo</button>
   </section>
 
+  <datalist id="listaNac"></datalist>
+
 </div>
 
 <script>
@@ -344,6 +346,74 @@
 
   /* ====== CONFIGURACIÓN ====== */
   var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx6cBFrkUZDP3XdPXUg3iBsqe5l-y1OR0jTeBd64-lGUmxtSR0iedHO97byGLc9KfgldQ/exec";
+
+  /* ====== NACIONALIDADES Y CÓDIGOS ====== */
+  var PAISES = [
+    ["Boliviana","Bolivian","+591"],
+    ["Argentina","Argentine","+54"],
+    ["Brasileña","Brazilian","+55"],
+    ["Chilena","Chilean","+56"],
+    ["Peruana","Peruvian","+51"],
+    ["Colombiana","Colombian","+57"],
+    ["Ecuatoriana","Ecuadorian","+593"],
+    ["Paraguaya","Paraguayan","+595"],
+    ["Uruguaya","Uruguayan","+598"],
+    ["Venezolana","Venezuelan","+58"],
+    ["Mexicana","Mexican","+52"],
+    ["Estadounidense","American","+1"],
+    ["Canadiense","Canadian","+1"],
+    ["Española","Spanish","+34"],
+    ["Francesa","French","+33"],
+    ["Alemana","German","+49"],
+    ["Italiana","Italian","+39"],
+    ["Británica","British","+44"],
+    ["Irlandesa","Irish","+353"],
+    ["Portuguesa","Portuguese","+351"],
+    ["Neerlandesa","Dutch","+31"],
+    ["Belga","Belgian","+32"],
+    ["Suiza","Swiss","+41"],
+    ["Austriaca","Austrian","+43"],
+    ["Polaca","Polish","+48"],
+    ["Checa","Czech","+420"],
+    ["Sueca","Swedish","+46"],
+    ["Noruega","Norwegian","+47"],
+    ["Danesa","Danish","+45"],
+    ["Finlandesa","Finnish","+358"],
+    ["Rusa","Russian","+7"],
+    ["Israelí","Israeli","+972"],
+    ["Japonesa","Japanese","+81"],
+    ["China","Chinese","+86"],
+    ["Coreana","Korean","+82"],
+    ["India","Indian","+91"],
+    ["Australiana","Australian","+61"],
+    ["Neozelandesa","New Zealander","+64"],
+    ["Sudafricana","South African","+27"]
+  ];
+
+  function normaliza(txt){
+    return txt.toLowerCase()
+      .replace(/[áàä]/g,"a").replace(/[éèë]/g,"e").replace(/[íìï]/g,"i")
+      .replace(/[óòö]/g,"o").replace(/[úùü]/g,"u").replace(/ñ/g,"n").trim();
+  }
+
+  function codigoDe(valor){
+    var v = normaliza(valor);
+    if(v === "") return "";
+    for(var i = 0; i < PAISES.length; i++){
+      if(normaliza(PAISES[i][0]) === v || normaliza(PAISES[i][1]) === v) return PAISES[i][2];
+    }
+    return "";
+  }
+
+  function llenarDatalist(){
+    var dl = document.getElementById("listaNac");
+    dl.innerHTML = "";
+    PAISES.forEach(function(pa){
+      var o = document.createElement("option");
+      o.value = (idioma === "en") ? pa[1] : pa[0];
+      dl.appendChild(o);
+    });
+  }
 
   /* ====== TEXTOS ====== */
   var T = {
@@ -376,7 +446,7 @@
       eNombre:"Escribe el nombre completo.",
       eDocumento:"Escribe el número de documento.",
       eNacionalidad:"Escribe la nacionalidad.",
-      eEdad:"Escribe una edad entre 0 y 120.",
+      eEdad:"Escribe una edad entre 1 y 99.",
       eCorreo:"Revisa el correo.",
       eRevisar:"Falta completar algunos datos. Revísalos abajo.",
       eEnvio:"No se pudo enviar el registro. Revisa la conexión y vuelve a intentar."
@@ -410,7 +480,7 @@
       eNombre:"Enter the full name.",
       eDocumento:"Enter the document number.",
       eNacionalidad:"Enter the nationality.",
-      eEdad:"Enter an age between 0 and 120.",
+      eEdad:"Enter an age between 1 and 99.",
       eCorreo:"Check the email address.",
       eRevisar:"Some fields are missing. Check them below.",
       eEnvio:"The registration could not be sent. Check your connection and try again."
@@ -451,7 +521,18 @@
       if(e.target.getAttribute("aria-invalid") === "true"){
         e.target.setAttribute("aria-invalid","false");
       }
+      formatear(e.target, bloque);
     });
+
+    bloque.addEventListener("change", function(e){
+      formatear(e.target, bloque);
+    });
+
+    bloque.addEventListener("blur", function(e){
+      if(e.target.getAttribute("data-campo") === "nombre"){
+        e.target.value = mayusculaInicial(e.target.value);
+      }
+    }, true);
 
     contenedor.appendChild(bloque);
     renumerar();
@@ -462,11 +543,46 @@
     return '<div class="campo">' +
       '<label for="' + clave + '_" data-l="' + etiqueta + '"' + (opcional ? ' data-opcional="1"' : '') + '></label>' +
       '<input type="' + tipo + '" data-campo="' + clave + '" data-p="' + (marcador||"") + '"' +
-        (tipo === "number" ? ' min="0" max="120" inputmode="numeric"' : '') +
+        (clave === "edad" ? ' min="1" max="99" maxlength="2" inputmode="numeric"' : '') +
+        (clave === "nacionalidad" ? ' list="listaNac" autocomplete="off"' : '') +
+        (clave === "documento" ? ' autocapitalize="characters" autocomplete="off"' : '') +
+        (clave === "nombre" ? ' autocapitalize="words" autocomplete="off"' : '') +
+        (clave === "telefono" ? ' inputmode="tel"' : '') +
         (tipo === "email" ? ' autocomplete="email"' : '') +
         ' aria-invalid="false">' +
       '<span class="aviso-campo" data-e="' + (error||"") + '"></span>' +
     '</div>';
+  }
+
+  function mayusculaInicial(txt){
+    return txt.toLowerCase().replace(/(^|[\s'\-])([\wáéíóúüñ])/g, function(m, sep, letra){
+      return sep + letra.toUpperCase();
+    });
+  }
+
+  function formatear(inp, bloque){
+    if(!inp || !inp.getAttribute) return;
+    var clave = inp.getAttribute("data-campo");
+
+    if(clave === "documento"){
+      var limpio = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if(limpio !== inp.value) inp.value = limpio;
+    }
+
+    if(clave === "edad"){
+      var soloNum = inp.value.replace(/\D/g, "").slice(0, 2);
+      if(soloNum !== inp.value) inp.value = soloNum;
+    }
+
+    if(clave === "nacionalidad"){
+      var tel = bloque.querySelector('[data-campo="telefono"]');
+      var cod = codigoDe(inp.value);
+      if(tel && cod){
+        var actual = tel.value.trim();
+        var esCodigoSolo = actual === "" || /^\+\d{1,4}$/.test(actual);
+        if(esCodigoSolo) tel.value = cod + " ";
+      }
+    }
   }
 
   function renumerar(){
@@ -511,6 +627,7 @@
       document.querySelectorAll("[data-idioma]").forEach(function(o){
         o.setAttribute("aria-pressed", o === b ? "true" : "false");
       });
+      llenarDatalist();
       renumerar();
     });
   });
@@ -525,6 +642,7 @@
       var p = {};
       bloque.querySelectorAll("input").forEach(function(inp){
         var clave = inp.getAttribute("data-campo");
+        if(clave === "nombre") inp.value = mayusculaInicial(inp.value.trim());
         var valor = inp.value.trim();
         var mal = false;
 
@@ -533,7 +651,7 @@
         if(clave === "nacionalidad" && valor.length < 3) mal = true;
         if(clave === "edad"){
           var n = parseInt(valor, 10);
-          if(isNaN(n) || n < 0 || n > 120) mal = true;
+          if(isNaN(n) || n < 1 || n > 99) mal = true;
         }
         if(clave === "correo" && valor !== "" && valor.indexOf("@") < 1) mal = true;
 
@@ -578,7 +696,9 @@
       }
     })
     .catch(function(err){
-      avisoGeneral.textContent = t("eEnvio");
+      avisoGeneral.innerHTML = t("eEnvio") +
+        '<br><br><span style="font-weight:400;font-size:12.5px;">Detalle t\u00e9cnico: ' +
+        String(err && err.message ? err.message : err) + '</span>';
       avisoGeneral.classList.add("visible");
       avisoGeneral.scrollIntoView({ block:"center" });
       console.error(err);
@@ -617,6 +737,7 @@
   });
 
   /* ====== INICIO ====== */
+  llenarDatalist();
   nuevaPersona();
   aplicarTextos();
 })();
