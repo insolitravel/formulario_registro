@@ -389,7 +389,7 @@
       </div>
       <div class="campo" id="campoCodigo">
         <label for="inputCodigo" data-t="lCodigo">Código de grupo</label>
-        <input type="text" id="inputCodigo" placeholder="TT-2026-0001" autocomplete="off" aria-invalid="false">
+        <input type="text" id="inputCodigo" placeholder="13" autocomplete="off" aria-invalid="false">
         <span class="aviso-campo" id="avisoCodigo"></span>
       </div>
       <p class="cupo" data-t="cupo">Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.</p>
@@ -506,7 +506,7 @@
       tuGrupo:"Tu grupo",
       modoNuevo:"Soy el primero del grupo",
       modoUnirme:"Ya tengo un código",
-      lCodigo:"Código de grupo",
+      lCodigo:"Código de grupo (o solo los últimos números)",
       cupo:"Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.",
       eCodigoVacio:"Escribe el código de grupo.",
       eCodigoNoExiste:"Ese código no existe. Revísalo con tu grupo.",
@@ -551,7 +551,7 @@
       tuGrupo:"Your group",
       modoNuevo:"I'm the first in the group",
       modoUnirme:"I already have a code",
-      lCodigo:"Group code",
+      lCodigo:"Group code (or just the last digits)",
       cupo:"Up to 6+ people per code. Each one can register from their own device.",
       eCodigoVacio:"Enter the group code.",
       eCodigoNoExiste:"That code does not exist. Check it with your group.",
@@ -763,6 +763,14 @@
     inputCodigo.setAttribute("aria-invalid","false");
   });
 
+  function completarCodigo(v){
+    v = String(v).trim().toUpperCase();
+    if(/^\d{1,4}$/.test(v)){
+      return "TT-" + new Date().getFullYear() + "-" + ("0000" + v).slice(-4);
+    }
+    return v;
+  }
+
   function errorCodigo(clave){
     avisoCodigo.textContent = t(clave);
     inputCodigo.setAttribute("aria-invalid","true");
@@ -830,7 +838,7 @@
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify({
         personas: personas,
-        codigo: (modoGrupo === "unirme") ? inputCodigo.value.trim().toUpperCase() : ""
+        codigo: (modoGrupo === "unirme") ? completarCodigo(inputCodigo.value) : ""
       })
     })
     .then(function(r){ return r.json(); })
