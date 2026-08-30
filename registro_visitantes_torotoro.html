@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro de visitantes · Torotoro</title>
+<style>
+  :root{
+    --tinta:#1B2430;
+    --tinta-suave:#4A5560;
+    --piedra:#E9E6DF;
+    --piedra-2:#DCD7CC;
+    --papel:#F6F4EF;
+    --ocre:#A85D18;
+    --ocre-claro:#C87B2E;
+    --basalto:#243642;
+    --linea:#C7C1B4;
+    --error:#8E2B20;
+    --ok:#2C6B4F;
+    --radio:4px;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{margin:0;padding:0;}
+
+  body{
+    background:var(--piedra);
+    color:var(--tinta);
+    font-family:"Segoe UI",Roboto,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    font-size:16px;
+    line-height:1.45;
+    -webkit-text-size-adjust:100%;
+  }
+
+  .marco{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 0 64px;
+  }
+
+  /* ---------- Encabezado ---------- */
+  header{
+    background:var(--basalto);
+    color:var(--papel);
+    padding:26px 22px 22px;
+    border-bottom:5px solid var(--ocre);
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ocre-claro);
+    font-weight:700;
+    margin:0 0 8px;
+  }
+  header h1{
+    margin:0;
+    font-size:27px;
+    line-height:1.12;
+    font-weight:800;
+    letter-spacing:-.01em;
+  }
+  header p{
+    margin:10px 0 0;
+    font-size:14.5px;
+    color:#BFC8CE;
+    max-width:44ch;
+  }
+  .idiomas{
+    display:flex;
+    gap:6px;
+    margin-top:16px;
+  }
+  .idiomas button{
+    background:transparent;
+    border:1px solid #4A5C68;
+    color:#BFC8CE;
+    font:inherit;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    padding:5px 12px;
+    border-radius:var(--radio);
+    cursor:pointer;
+  }
+  .idiomas button[aria-pressed="true"]{
+    background:var(--ocre);
+    border-color:var(--ocre);
+    color:#fff;
+  }
+
+  /* ---------- Cuerpo ---------- */
+  main{padding:22px 18px 0;}
+
+  .persona{
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-radius:var(--radio);
+    padding:18px 16px 6px;
+    margin-bottom:14px;
+    position:relative;
+  }
+  .persona-cab{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:-4px 0 14px;
+  }
+  .persona-num{
+    font-size:11.5px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:800;
+    color:var(--ocre);
+  }
+  .quitar{
+    background:none;
+    border:none;
+    color:var(--tinta-suave);
+    font:inherit;
+    font-size:13.5px;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:4px;
+  }
+
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.02em;
+    margin-bottom:5px;
+    color:var(--tinta);
+  }
+  .opcional{
+    font-weight:500;
+    color:var(--tinta-suave);
+    letter-spacing:0;
+  }
+  .campo{margin-bottom:14px;}
+  .fila{display:flex;gap:12px;}
+  .fila .campo{flex:1;}
+
+  input,select{
+    width:100%;
+    font:inherit;
+    font-size:16px;
+    color:var(--tinta);
+    background:#fff;
+    border:1px solid var(--linea);
+    border-radius:var(--radio);
+    padding:11px 12px;
+    min-height:46px;
+  }
+  input:focus,select:focus,button:focus-visible{
+    outline:3px solid var(--ocre-claro);
+    outline-offset:1px;
+    border-color:var(--ocre);
+  }
+  input[aria-invalid="true"]{border-color:var(--error);background:#FDF3F2;}
+  .aviso-campo{
+    display:none;
+    font-size:12.5px;
+    color:var(--error);
+    margin-top:5px;
+    font-weight:600;
+  }
+  input[aria-invalid="true"] + .aviso-campo{display:block;}
+
+  .agregar{
+    width:100%;
+    background:transparent;
+    border:1.5px dashed var(--ocre);
+    color:var(--ocre);
+    font:inherit;
+    font-size:15px;
+    font-weight:700;
+    padding:13px;
+    border-radius:var(--radio);
+    cursor:pointer;
+    margin-bottom:20px;
+  }
+  .agregar:hover{background:#F0E7DC;}
+
+  .enviar{
+    width:100%;
+    background:var(--ocre);
+    color:#fff;
+    border:none;
+    font:inherit;
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:.02em;
+    padding:16px;
+    border-radius:var(--radio);
+    cursor:pointer;
+    min-height:54px;
+  }
+  .enviar:hover{background:#94500F;}
+  .enviar[disabled]{background:#9A9689;cursor:default;}
+
+  .nota{
+    font-size:13px;
+    color:var(--tinta-suave);
+    margin:14px 2px 0;
+    line-height:1.5;
+  }
+
+  .aviso-general{
+    display:none;
+    background:#FDF3F2;
+    border-left:4px solid var(--error);
+    color:var(--error);
+    font-size:14px;
+    font-weight:600;
+    padding:12px 14px;
+    border-radius:var(--radio);
+    margin-bottom:16px;
+  }
+  .aviso-general.visible{display:block;}
+
+  /* ---------- Comprobante ---------- */
+  #comprobante{display:none;padding:26px 18px 0;}
+  .sello{
+    background:var(--basalto);
+    color:var(--papel);
+    border-radius:var(--radio);
+    padding:26px 20px 24px;
+    text-align:center;
+    border-bottom:5px solid var(--ocre);
+  }
+  .sello .etiqueta{
+    font-size:11.5px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ocre-claro);
+    font-weight:700;
+    margin:0 0 12px;
+  }
+  .codigo{
+    font-family:"Consolas","SF Mono",Menlo,monospace;
+    font-size:38px;
+    font-weight:700;
+    letter-spacing:.04em;
+    margin:0;
+    line-height:1.1;
+    word-break:break-all;
+  }
+  .sello .pie{
+    margin:14px auto 0;
+    font-size:14px;
+    color:#BFC8CE;
+    max-width:34ch;
+  }
+  .resumen{
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-top:none;
+    border-radius:0 0 var(--radio) var(--radio);
+    padding:16px;
+    font-size:14.5px;
+  }
+  .resumen h2{
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--tinta-suave);
+    margin:0 0 10px;
+    font-weight:800;
+  }
+  .resumen ol{margin:0;padding-left:20px;}
+  .resumen li{margin-bottom:4px;}
+  .otro{
+    display:block;
+    width:100%;
+    margin-top:20px;
+    background:transparent;
+    border:1.5px solid var(--basalto);
+    color:var(--basalto);
+    font:inherit;
+    font-size:15px;
+    font-weight:700;
+    padding:13px;
+    border-radius:var(--radio);
+    cursor:pointer;
+  }
+
+  @media (max-width:400px){
+    .fila{display:block;}
+    header h1{font-size:24px;}
+    .codigo{font-size:32px;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .persona{animation:entra .18s ease-out;}
+    @keyframes entra{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+<div class="marco">
+
+  <header>
+    <p class="eyebrow" data-t="eyebrow">Parque Nacional Torotoro · Bolivia</p>
+    <h1 data-t="titulo">Registro de visitantes</h1>
+    <p data-t="bajada">Registra a todo tu grupo una sola vez. Al terminar recibes un código que le das a tu guía.</p>
+    <div class="idiomas" role="group" aria-label="Idioma">
+      <button type="button" data-idioma="es" aria-pressed="true">ESPAÑOL</button>
+      <button type="button" data-idioma="en" aria-pressed="false">ENGLISH</button>
+    </div>
+  </header>
+
+  <main id="formulario">
+    <div class="aviso-general" id="avisoGeneral" role="alert"></div>
+
+    <div id="personas"></div>
+
+    <button type="button" class="agregar" id="btnAgregar" data-t="agregar">+ Agregar otra persona</button>
+
+    <button type="button" class="enviar" id="btnEnviar" data-t="enviar">Registrar grupo</button>
+
+    <p class="nota" data-t="nota">Los datos se usan para el control de ingreso al parque y para el registro de actividades con los guías locales.</p>
+  </main>
+
+  <section id="comprobante" aria-live="polite">
+    <div class="sello">
+      <p class="etiqueta" data-t="etiquetaCodigo">Código de grupo</p>
+      <p class="codigo" id="codigoTexto">—</p>
+      <p class="pie" data-t="pieCodigo">Anótalo o toma una foto. Dáselo a tu guía antes de salir.</p>
+    </div>
+    <div class="resumen">
+      <h2 data-t="registrados">Personas registradas</h2>
+      <ol id="listaResumen"></ol>
+    </div>
+    <button type="button" class="otro" id="btnOtro" data-t="otroGrupo">Registrar otro grupo</button>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ====== CONFIGURACIÓN ====== */
+  var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx6cBFrkUZDP3XdPXUg3iBsqe5l-y1OR0jTeBd64-lGUmxtSR0iedHO97byGLc9KfgldQ/exec";
+
+  /* ====== TEXTOS ====== */
+  var T = {
+    es:{
+      eyebrow:"Parque Nacional Torotoro · Bolivia",
+      titulo:"Registro de visitantes",
+      bajada:"Registra a todo tu grupo una sola vez. Al terminar recibes un código que le das a tu guía.",
+      agregar:"+ Agregar otra persona",
+      enviar:"Registrar grupo",
+      enviando:"Enviando…",
+      nota:"Los datos se usan para el control de ingreso al parque y para el registro de actividades con los guías locales.",
+      etiquetaCodigo:"Código de grupo",
+      pieCodigo:"Anótalo o toma una foto. Dáselo a tu guía antes de salir.",
+      registrados:"Personas registradas",
+      otroGrupo:"Registrar otro grupo",
+      persona:"Persona",
+      quitar:"Quitar",
+      lNombre:"Nombre completo",
+      lDocumento:"Documento o pasaporte",
+      lNacionalidad:"Nacionalidad",
+      lEdad:"Edad",
+      lCorreo:"Correo",
+      lTelefono:"Teléfono",
+      opcional:"(opcional)",
+      pNombre:"Nombre y apellidos",
+      pDocumento:"Número de CI o pasaporte",
+      pNacionalidad:"Boliviana, Argentina, Francesa…",
+      pCorreo:"nombre@correo.com",
+      pTelefono:"Con código de país",
+      eNombre:"Escribe el nombre completo.",
+      eDocumento:"Escribe el número de documento.",
+      eNacionalidad:"Escribe la nacionalidad.",
+      eEdad:"Escribe una edad entre 0 y 120.",
+      eCorreo:"Revisa el correo.",
+      eRevisar:"Falta completar algunos datos. Revísalos abajo.",
+      eEnvio:"No se pudo enviar el registro. Revisa la conexión y vuelve a intentar."
+    },
+    en:{
+      eyebrow:"Torotoro National Park · Bolivia",
+      titulo:"Visitor registration",
+      bajada:"Register your whole group once. At the end you get a code to give your guide.",
+      agregar:"+ Add another person",
+      enviar:"Register group",
+      enviando:"Sending…",
+      nota:"This information is used for park entry control and for activity records with the local guides.",
+      etiquetaCodigo:"Group code",
+      pieCodigo:"Write it down or take a photo. Give it to your guide before you set out.",
+      registrados:"People registered",
+      otroGrupo:"Register another group",
+      persona:"Person",
+      quitar:"Remove",
+      lNombre:"Full name",
+      lDocumento:"ID or passport",
+      lNacionalidad:"Nationality",
+      lEdad:"Age",
+      lCorreo:"Email",
+      lTelefono:"Phone",
+      opcional:"(optional)",
+      pNombre:"First and last name",
+      pDocumento:"ID or passport number",
+      pNacionalidad:"Bolivian, Argentine, French…",
+      pCorreo:"name@email.com",
+      pTelefono:"With country code",
+      eNombre:"Enter the full name.",
+      eDocumento:"Enter the document number.",
+      eNacionalidad:"Enter the nationality.",
+      eEdad:"Enter an age between 0 and 120.",
+      eCorreo:"Check the email address.",
+      eRevisar:"Some fields are missing. Check them below.",
+      eEnvio:"The registration could not be sent. Check your connection and try again."
+    }
+  };
+
+  var idioma = "es";
+  var contenedor = document.getElementById("personas");
+  var avisoGeneral = document.getElementById("avisoGeneral");
+  var btnEnviar = document.getElementById("btnEnviar");
+
+  function t(clave){ return T[idioma][clave]; }
+
+  /* ====== CONSTRUIR UNA PERSONA ====== */
+  function nuevaPersona(){
+    var bloque = document.createElement("div");
+    bloque.className = "persona";
+    bloque.innerHTML =
+      '<div class="persona-cab">' +
+        '<span class="persona-num"></span>' +
+        '<button type="button" class="quitar"></button>' +
+      '</div>' +
+      campo("nombre","text","lNombre","pNombre","eNombre") +
+      campo("documento","text","lDocumento","pDocumento","eDocumento") +
+      '<div class="fila">' +
+        campo("nacionalidad","text","lNacionalidad","pNacionalidad","eNacionalidad") +
+        campo("edad","number","lEdad","","eEdad") +
+      '</div>' +
+      campo("correo","email","lCorreo","pCorreo","eCorreo",true) +
+      campo("telefono","tel","lTelefono","pTelefono","",true);
+
+    bloque.querySelector(".quitar").addEventListener("click", function(){
+      bloque.remove();
+      renumerar();
+    });
+
+    bloque.addEventListener("input", function(e){
+      if(e.target.getAttribute("aria-invalid") === "true"){
+        e.target.setAttribute("aria-invalid","false");
+      }
+    });
+
+    contenedor.appendChild(bloque);
+    renumerar();
+    return bloque;
+  }
+
+  function campo(clave, tipo, etiqueta, marcador, error, opcional){
+    return '<div class="campo">' +
+      '<label for="' + clave + '_" data-l="' + etiqueta + '"' + (opcional ? ' data-opcional="1"' : '') + '></label>' +
+      '<input type="' + tipo + '" data-campo="' + clave + '" data-p="' + (marcador||"") + '"' +
+        (tipo === "number" ? ' min="0" max="120" inputmode="numeric"' : '') +
+        (tipo === "email" ? ' autocomplete="email"' : '') +
+        ' aria-invalid="false">' +
+      '<span class="aviso-campo" data-e="' + (error||"") + '"></span>' +
+    '</div>';
+  }
+
+  function renumerar(){
+    var bloques = contenedor.querySelectorAll(".persona");
+    for(var i = 0; i < bloques.length; i++){
+      bloques[i].querySelector(".persona-num").textContent = t("persona") + " " + (i + 1);
+      var quitar = bloques[i].querySelector(".quitar");
+      quitar.textContent = t("quitar");
+      quitar.style.display = bloques.length > 1 ? "" : "none";
+    }
+    aplicarTextos();
+  }
+
+  /* ====== IDIOMA ====== */
+  function aplicarTextos(){
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      el.textContent = t(el.getAttribute("data-t"));
+    });
+    document.querySelectorAll("[data-l]").forEach(function(el){
+      el.textContent = t(el.getAttribute("data-l"));
+      if(el.getAttribute("data-opcional")){
+        var s = document.createElement("span");
+        s.className = "opcional";
+        s.textContent = " " + t("opcional");
+        el.appendChild(s);
+      }
+    });
+    document.querySelectorAll("[data-p]").forEach(function(el){
+      var clave = el.getAttribute("data-p");
+      el.placeholder = clave ? t(clave) : "";
+    });
+    document.querySelectorAll("[data-e]").forEach(function(el){
+      var clave = el.getAttribute("data-e");
+      el.textContent = clave ? t(clave) : "";
+    });
+  }
+
+  document.querySelectorAll("[data-idioma]").forEach(function(b){
+    b.addEventListener("click", function(){
+      idioma = b.getAttribute("data-idioma");
+      document.documentElement.lang = idioma;
+      document.querySelectorAll("[data-idioma]").forEach(function(o){
+        o.setAttribute("aria-pressed", o === b ? "true" : "false");
+      });
+      renumerar();
+    });
+  });
+
+  /* ====== VALIDAR Y ENVIAR ====== */
+  function leerPersonas(){
+    var lista = [];
+    var valido = true;
+    var primerError = null;
+
+    contenedor.querySelectorAll(".persona").forEach(function(bloque){
+      var p = {};
+      bloque.querySelectorAll("input").forEach(function(inp){
+        var clave = inp.getAttribute("data-campo");
+        var valor = inp.value.trim();
+        var mal = false;
+
+        if(clave === "nombre" && valor.length < 3) mal = true;
+        if(clave === "documento" && valor.length < 3) mal = true;
+        if(clave === "nacionalidad" && valor.length < 3) mal = true;
+        if(clave === "edad"){
+          var n = parseInt(valor, 10);
+          if(isNaN(n) || n < 0 || n > 120) mal = true;
+        }
+        if(clave === "correo" && valor !== "" && valor.indexOf("@") < 1) mal = true;
+
+        inp.setAttribute("aria-invalid", mal ? "true" : "false");
+        if(mal){
+          valido = false;
+          if(!primerError) primerError = inp;
+        }
+        p[clave] = valor;
+      });
+      lista.push(p);
+    });
+
+    if(!valido){
+      avisoGeneral.textContent = t("eRevisar");
+      avisoGeneral.classList.add("visible");
+      if(primerError) primerError.focus();
+      return null;
+    }
+    avisoGeneral.classList.remove("visible");
+    return lista;
+  }
+
+  btnEnviar.addEventListener("click", function(){
+    var personas = leerPersonas();
+    if(!personas) return;
+
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = t("enviando");
+
+    fetch(URL_SCRIPT, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify({ personas: personas })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data && data.ok){
+        mostrarComprobante(data.codigo, personas);
+      } else {
+        throw new Error(data && data.error ? data.error : "sin respuesta");
+      }
+    })
+    .catch(function(err){
+      avisoGeneral.textContent = t("eEnvio");
+      avisoGeneral.classList.add("visible");
+      avisoGeneral.scrollIntoView({ block:"center" });
+      console.error(err);
+    })
+    .then(function(){
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = t("enviar");
+    });
+  });
+
+  function mostrarComprobante(codigo, personas){
+    document.getElementById("codigoTexto").textContent = codigo;
+    var lista = document.getElementById("listaResumen");
+    lista.innerHTML = "";
+    personas.forEach(function(p){
+      var li = document.createElement("li");
+      li.textContent = p.nombre + " · " + p.nacionalidad;
+      lista.appendChild(li);
+    });
+    document.getElementById("formulario").style.display = "none";
+    document.getElementById("comprobante").style.display = "block";
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById("btnOtro").addEventListener("click", function(){
+    contenedor.innerHTML = "";
+    nuevaPersona();
+    document.getElementById("comprobante").style.display = "none";
+    document.getElementById("formulario").style.display = "block";
+    window.scrollTo(0,0);
+  });
+
+  document.getElementById("btnAgregar").addEventListener("click", function(){
+    var b = nuevaPersona();
+    b.querySelector("input").focus();
+  });
+
+  /* ====== INICIO ====== */
+  nuevaPersona();
+  aplicarTextos();
+})();
+</script>
+</body>
+</html>
