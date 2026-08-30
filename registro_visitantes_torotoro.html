@@ -570,7 +570,7 @@
     }
 
     if(clave === "edad"){
-      var soloNum = inp.value.replace(/\D/g, "").slice(0, 2);
+      var soloNum = inp.value.replace(/\D/g, "").replace(/^0+/, "").slice(0, 2);
       if(soloNum !== inp.value) inp.value = soloNum;
     }
 
