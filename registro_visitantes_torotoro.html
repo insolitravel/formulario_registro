@@ -664,6 +664,7 @@
         var clave = inp.getAttribute("data-campo");
         if(clave === "nombre") inp.value = mayusculaInicial(inp.value.trim());
         var valor = inp.value.trim();
+        if(clave === "telefono") valor = valor.replace(/^\+/, "");
         var mal = false;
 
         if(clave === "nombre" && valor.length < 3) mal = true;
