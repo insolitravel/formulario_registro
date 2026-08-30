@@ -109,6 +109,55 @@
   /* ---------- Cuerpo ---------- */
   main{padding:22px 18px 0;}
 
+  .grupo{
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-radius:var(--radio);
+    padding:16px;
+    margin-bottom:16px;
+  }
+  .grupo h2{
+    font-size:11.5px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:800;
+    color:#2E5340;
+    margin:0 0 12px;
+  }
+  .modo{display:flex;gap:8px;margin-bottom:4px;}
+  .modo button{
+    flex:1;
+    background:#EDEAE2;
+    border:1.5px solid var(--linea);
+    color:var(--tinta-suave);
+    font:inherit;
+    font-size:14px;
+    font-weight:700;
+    padding:11px 8px;
+    border-radius:var(--radio);
+    cursor:pointer;
+    line-height:1.25;
+  }
+  .modo button[aria-pressed="true"]{
+    background:#2E5340;
+    border-color:#2E5340;
+    color:#fff;
+  }
+  #campoCodigo{display:none;margin-top:14px;margin-bottom:0;}
+  #campoCodigo.visible{display:block;}
+  #campoCodigo input{
+    font-family:"Consolas","SF Mono",Menlo,monospace;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-align:center;
+  }
+  .cupo{
+    font-size:12.5px;
+    color:var(--tinta-suave);
+    margin:10px 2px 0;
+  }
+
   .persona{
     background:var(--papel);
     border:1px solid var(--linea);
@@ -332,6 +381,20 @@
   <main id="formulario">
     <div class="aviso-general" id="avisoGeneral" role="alert"></div>
 
+    <div class="grupo">
+      <h2 data-t="tuGrupo">Tu grupo</h2>
+      <div class="modo" role="group">
+        <button type="button" id="btnNuevo" data-t="modoNuevo" aria-pressed="true">Soy el primero del grupo</button>
+        <button type="button" id="btnUnirme" data-t="modoUnirme" aria-pressed="false">Ya tengo un código</button>
+      </div>
+      <div class="campo" id="campoCodigo">
+        <label for="inputCodigo" data-t="lCodigo">Código de grupo</label>
+        <input type="text" id="inputCodigo" placeholder="TT-2026-0001" autocomplete="off" aria-invalid="false">
+        <span class="aviso-campo" id="avisoCodigo"></span>
+      </div>
+      <p class="cupo" data-t="cupo">Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.</p>
+    </div>
+
     <div id="personas"></div>
 
     <button type="button" class="agregar" id="btnAgregar" data-t="agregar">+ Agregar otra persona</button>
@@ -440,6 +503,16 @@
       titulo:"Formulario Visitantes · Guías Torotoro",
       bajada:"Registra a todo tu grupo una sola vez. Al terminar recibes un código que das a tu guía.",
       consulta:"Consulta al número 74359152",
+      tuGrupo:"Tu grupo",
+      modoNuevo:"Soy el primero del grupo",
+      modoUnirme:"Ya tengo un código",
+      lCodigo:"Código de grupo",
+      cupo:"Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.",
+      eCodigoVacio:"Escribe el código de grupo.",
+      eCodigoNoExiste:"Ese código no existe. Revísalo con tu grupo.",
+      eGrupoLleno:"Ese grupo ya tiene 7 personas. Usa un código nuevo.",
+      pieCodigoNuevo:"Comparte este código con tu grupo para que se registren desde su celular.",
+      enGrupo:"personas en este grupo",
       agregar:"+ Agregar otra persona",
       enviar:"Registrar grupo",
       enviando:"Enviando…",
@@ -475,6 +548,16 @@
       titulo:"Visitor Form · Torotoro Guides",
       bajada:"Register your whole group once. At the end you get a code to give your guide.",
       consulta:"Questions? Call 74359152",
+      tuGrupo:"Your group",
+      modoNuevo:"I'm the first in the group",
+      modoUnirme:"I already have a code",
+      lCodigo:"Group code",
+      cupo:"Up to 6+ people per code. Each one can register from their own device.",
+      eCodigoVacio:"Enter the group code.",
+      eCodigoNoExiste:"That code does not exist. Check it with your group.",
+      eGrupoLleno:"That group already has 7 people. Use a new code.",
+      pieCodigoNuevo:"Share this code with your group so they can register from their phones.",
+      enGrupo:"people in this group",
       agregar:"+ Add another person",
       enviar:"Register group",
       enviando:"Sending…",
@@ -652,6 +735,40 @@
     });
   });
 
+  /* ====== MODO DE GRUPO ====== */
+  var modoGrupo = "nuevo";
+  var campoCodigo = document.getElementById("campoCodigo");
+  var inputCodigo = document.getElementById("inputCodigo");
+  var avisoCodigo = document.getElementById("avisoCodigo");
+
+  function fijarModo(m){
+    modoGrupo = m;
+    document.getElementById("btnNuevo").setAttribute("aria-pressed", m === "nuevo" ? "true" : "false");
+    document.getElementById("btnUnirme").setAttribute("aria-pressed", m === "unirme" ? "true" : "false");
+    if(m === "unirme"){
+      campoCodigo.classList.add("visible");
+      inputCodigo.focus();
+    } else {
+      campoCodigo.classList.remove("visible");
+      inputCodigo.setAttribute("aria-invalid","false");
+    }
+  }
+
+  document.getElementById("btnNuevo").addEventListener("click", function(){ fijarModo("nuevo"); });
+  document.getElementById("btnUnirme").addEventListener("click", function(){ fijarModo("unirme"); });
+
+  inputCodigo.addEventListener("input", function(){
+    var v = inputCodigo.value.toUpperCase().replace(/[^A-Z0-9-]/g, "");
+    if(v !== inputCodigo.value) inputCodigo.value = v;
+    inputCodigo.setAttribute("aria-invalid","false");
+  });
+
+  function errorCodigo(clave){
+    avisoCodigo.textContent = t(clave);
+    inputCodigo.setAttribute("aria-invalid","true");
+    campoCodigo.scrollIntoView({ block:"center" });
+  }
+
   /* ====== VALIDAR Y ENVIAR ====== */
   function leerPersonas(){
     var lista = [];
@@ -697,6 +814,11 @@
   }
 
   btnEnviar.addEventListener("click", function(){
+    if(modoGrupo === "unirme" && inputCodigo.value.trim() === ""){
+      errorCodigo("eCodigoVacio");
+      return;
+    }
+
     var personas = leerPersonas();
     if(!personas) return;
 
@@ -706,12 +828,19 @@
     fetch(URL_SCRIPT, {
       method:"POST",
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({ personas: personas })
+      body: JSON.stringify({
+        personas: personas,
+        codigo: (modoGrupo === "unirme") ? inputCodigo.value.trim().toUpperCase() : ""
+      })
     })
     .then(function(r){ return r.json(); })
     .then(function(data){
       if(data && data.ok){
-        mostrarComprobante(data.codigo, personas);
+        mostrarComprobante(data.codigo, personas, data.total, data.nuevo);
+      } else if(data && data.motivo === "no_existe"){
+        errorCodigo("eCodigoNoExiste");
+      } else if(data && data.motivo === "lleno"){
+        errorCodigo("eGrupoLleno");
       } else {
         throw new Error(data && data.error ? data.error : "sin respuesta");
       }
@@ -730,8 +859,15 @@
     });
   });
 
-  function mostrarComprobante(codigo, personas){
+  function mostrarComprobante(codigo, personas, total, esNuevo){
     document.getElementById("codigoTexto").textContent = codigo;
+    var pie = document.querySelector("#comprobante .pie");
+    if(pie){
+      pie.textContent = esNuevo ? t("pieCodigoNuevo") : t("pieCodigo");
+      if(total){
+        pie.textContent += "  (" + total + " " + t("enGrupo") + ")";
+      }
+    }
     var lista = document.getElementById("listaResumen");
     lista.innerHTML = "";
     personas.forEach(function(p){
@@ -746,6 +882,8 @@
 
   document.getElementById("btnOtro").addEventListener("click", function(){
     contenedor.innerHTML = "";
+    inputCodigo.value = "";
+    fijarModo("nuevo");
     nuevaPersona();
     document.getElementById("comprobante").style.display = "none";
     document.getElementById("formulario").style.display = "block";
