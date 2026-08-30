@@ -8,13 +8,17 @@
   :root{
     --tinta:#1B2430;
     --tinta-suave:#4A5560;
-    --piedra:#E9E6DF;
-    --piedra-2:#DCD7CC;
-    --papel:#F6F4EF;
+    --piedra:#D5D1C6;
+    --piedra-2:#C6C1B4;
+    --papel:#E4E0D6;
     --ocre:#A85D18;
     --ocre-claro:#C87B2E;
     --basalto:#243642;
-    --linea:#C7C1B4;
+    --verde-pacay:#0A2417;
+    --verde-lima:#2E5211;
+    --lima-clara:#DCE9B2;
+    --lechuga:#8BE31F;
+    --linea:#AFA99A;
     --error:#8E2B20;
     --ok:#2C6B4F;
     --radio:4px;
@@ -41,18 +45,23 @@
 
   /* ---------- Encabezado ---------- */
   header{
-    background:var(--basalto);
-    color:var(--papel);
+    background:var(--verde-pacay);
+    background:linear-gradient(135deg,var(--verde-pacay) 0%,var(--verde-lima) 100%);
+    color:#F6F4EF;
     padding:26px 22px 22px;
-    border-bottom:5px solid var(--ocre);
+    border-bottom:5px solid var(--lechuga);
+    text-align:center;
   }
   .eyebrow{
-    font-size:11px;
-    letter-spacing:.22em;
+    font-size:10.5px;
+    letter-spacing:.10em;
+    white-space:nowrap;
     text-transform:uppercase;
-    color:var(--ocre-claro);
+    color:#A8C97A;
     font-weight:700;
-    margin:0 0 8px;
+    margin:0 auto 8px;
+    max-width:none;
+    text-align:center;
   }
   header h1{
     margin:0;
@@ -62,20 +71,27 @@
     letter-spacing:-.01em;
   }
   header p{
-    margin:10px 0 0;
+    margin:10px auto 0;
     font-size:14.5px;
-    color:#BFC8CE;
+    color:#E8F1D8;
     max-width:44ch;
+  }
+  header .consulta{
+    margin-top:8px;
+    font-size:12.5px;
+    color:var(--lima-clara);
+    font-weight:600;
   }
   .idiomas{
     display:flex;
     gap:6px;
     margin-top:16px;
+    justify-content:center;
   }
   .idiomas button{
-    background:transparent;
-    border:1px solid #4A5C68;
-    color:#BFC8CE;
+    background:rgba(160,168,160,.18);
+    border:1px solid #9AA39A;
+    color:#D6DAD4;
     font:inherit;
     font-size:12.5px;
     font-weight:700;
@@ -85,9 +101,9 @@
     cursor:pointer;
   }
   .idiomas button[aria-pressed="true"]{
-    background:var(--ocre);
-    border-color:var(--ocre);
-    color:#fff;
+    background:#B9BFB6;
+    border-color:#B9BFB6;
+    color:#1B2018;
   }
 
   /* ---------- Cuerpo ---------- */
@@ -171,9 +187,9 @@
 
   .agregar{
     width:100%;
-    background:transparent;
-    border:1.5px dashed var(--ocre);
-    color:var(--ocre);
+    background:#EDEAE2;
+    border:1.5px dashed #2E5340;
+    color:#2E5340;
     font:inherit;
     font-size:15px;
     font-weight:700;
@@ -182,11 +198,11 @@
     cursor:pointer;
     margin-bottom:20px;
   }
-  .agregar:hover{background:#F0E7DC;}
+  .agregar:hover{background:#CBD3CA;}
 
   .enviar{
     width:100%;
-    background:var(--ocre);
+    background:#2E5340;
     color:#fff;
     border:none;
     font:inherit;
@@ -198,7 +214,7 @@
     cursor:pointer;
     min-height:54px;
   }
-  .enviar:hover{background:#94500F;}
+  .enviar:hover{background:#22402F;}
   .enviar[disabled]{background:#9A9689;cursor:default;}
 
   .nota{
@@ -225,7 +241,7 @@
   #comprobante{display:none;padding:26px 18px 0;}
   .sello{
     background:var(--basalto);
-    color:var(--papel);
+    color:#F6F4EF;
     border-radius:var(--radio);
     padding:26px 20px 24px;
     text-align:center;
@@ -288,6 +304,7 @@
   }
 
   @media (max-width:400px){
+    .eyebrow{font-size:9px;letter-spacing:.05em;}
     .fila{display:block;}
     header h1{font-size:24px;}
     .codigo{font-size:32px;}
@@ -303,8 +320,9 @@
 
   <header>
     <p class="eyebrow" data-t="eyebrow">Parque Nacional Torotoro · Bolivia</p>
-    <h1 data-t="titulo">Registro de visitantes</h1>
-    <p data-t="bajada">Registra a todo tu grupo una sola vez. Al terminar recibes un código que le das a tu guía.</p>
+    <h1 data-t="titulo">Formulario Visitantes · Guías Torotoro</h1>
+    <p data-t="bajada">Registra a todo tu grupo una sola vez. Al terminar recibes un código que das a tu guía.</p>
+    <p class="consulta" data-t="consulta">Consulta al número 74359152</p>
     <div class="idiomas" role="group" aria-label="Idioma">
       <button type="button" data-idioma="es" aria-pressed="true">ESPAÑOL</button>
       <button type="button" data-idioma="en" aria-pressed="false">ENGLISH</button>
@@ -419,8 +437,9 @@
   var T = {
     es:{
       eyebrow:"Parque Nacional Torotoro · Bolivia",
-      titulo:"Registro de visitantes",
-      bajada:"Registra a todo tu grupo una sola vez. Al terminar recibes un código que le das a tu guía.",
+      titulo:"Formulario Visitantes · Guías Torotoro",
+      bajada:"Registra a todo tu grupo una sola vez. Al terminar recibes un código que das a tu guía.",
+      consulta:"Consulta al número 74359152",
       agregar:"+ Agregar otra persona",
       enviar:"Registrar grupo",
       enviando:"Enviando…",
@@ -453,8 +472,9 @@
     },
     en:{
       eyebrow:"Torotoro National Park · Bolivia",
-      titulo:"Visitor registration",
+      titulo:"Visitor Form · Torotoro Guides",
       bajada:"Register your whole group once. At the end you get a code to give your guide.",
+      consulta:"Questions? Call 74359152",
       agregar:"+ Add another person",
       enviar:"Register group",
       enviando:"Sending…",
