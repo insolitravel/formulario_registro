@@ -77,6 +77,8 @@
     max-width:52ch;
     font-size:14px;
     line-height:1.5;
+    color:#FFD166;
+    font-weight:600;
     font-style:italic;
     text-align:justify;
     text-align-last:center;
@@ -139,9 +141,10 @@
     border:1.5px solid var(--linea);
     color:var(--tinta-suave);
     font:inherit;
-    font-size:14px;
-    font-weight:700;
-    padding:11px 8px;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.02em;
+    padding:12px 8px;
     border-radius:var(--radio);
     cursor:pointer;
     line-height:1.25;
@@ -213,8 +216,15 @@
     letter-spacing:0;
   }
   .campo{margin-bottom:14px;}
-  .fila{display:flex;gap:12px;}
-  .fila .campo{flex:1;}
+  .fila{display:flex;gap:10px;}
+  .fila .campo{flex:1;margin-bottom:14px;}
+  .c-nac{flex:1 1 46%;min-width:0;}
+  .c-edad{flex:0 0 68px;}
+  .c-gen{flex:1 1 34%;min-width:0;}
+  .fila .campo label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .c-nac input,.c-gen select{padding-left:10px;padding-right:10px;}
+  .c-gen select{padding-right:26px;background-position:right 8px center;}
+  .c-edad input{text-align:center;padding-left:6px;padding-right:6px;}
 
   input,select{
     width:100%;
@@ -226,6 +236,14 @@
     border-radius:var(--radio);
     padding:11px 12px;
     min-height:46px;
+  }
+  select{
+    -webkit-appearance:none;
+    appearance:none;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234A5560' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    padding-right:32px;
   }
   input:focus,select:focus,button:focus-visible{
     outline:3px solid var(--ocre-claro);
@@ -240,7 +258,9 @@
     margin-top:5px;
     font-weight:600;
   }
-  input[aria-invalid="true"] + .aviso-campo{display:block;}
+  input[aria-invalid="true"] + .aviso-campo,
+  select[aria-invalid="true"] + .aviso-campo{display:block;}
+  select[aria-invalid="true"]{border-color:var(--error);background-color:#FDF3F2;}
 
   .agregar{
     width:100%;
@@ -362,7 +382,10 @@
 
   @media (max-width:400px){
     .eyebrow{font-size:9px;letter-spacing:.05em;}
-    .fila{display:block;}
+    .fila{flex-wrap:wrap;}
+    .c-nac{flex:1 1 100%;}
+    .c-edad{flex:0 0 68px;}
+    .c-gen{flex:1 1 auto;}
     header h1{font-size:24px;}
     .codigo{font-size:32px;}
   }
@@ -392,15 +415,15 @@
     <div class="grupo">
       <h2 data-t="tuGrupo">Tu grupo</h2>
       <div class="modo" role="group">
-        <button type="button" id="btnNuevo" data-t="modoNuevo" aria-pressed="true">Soy el jefe de grupo</button>
-        <button type="button" id="btnUnirme" data-t="modoUnirme" aria-pressed="false">Ya tengo código</button>
+        <button type="button" id="btnNuevo" data-t="modoNuevo" aria-pressed="true">SOY JEFE DE GRUPO</button>
+        <button type="button" id="btnUnirme" data-t="modoUnirme" aria-pressed="false">YA TENGO GRUPO</button>
       </div>
       <div class="campo" id="campoCodigo">
         <label for="inputCodigo" data-t="lCodigo">Código de grupo</label>
         <input type="text" id="inputCodigo" placeholder="13" autocomplete="off" aria-invalid="false">
         <span class="aviso-campo" id="avisoCodigo"></span>
       </div>
-      <p class="cupo" data-t="cupo">Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.</p>
+      <p class="cupo" data-t="cupo">Hasta 6+ personas pueden registrarse en un mismo grupo.</p>
     </div>
 
     <div id="personas"></div>
@@ -435,6 +458,13 @@
 
   /* ====== CONFIGURACIÓN ====== */
   var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx6cBFrkUZDP3XdPXUg3iBsqe5l-y1OR0jTeBd64-lGUmxtSR0iedHO97byGLc9KfgldQ/exec";
+
+  /* ====== GÉNERO ====== */
+  var GENEROS = [
+    ["Masculino","Masculino","Male"],
+    ["Femenino","Femenino","Female"],
+    ["NR","No responde","Prefer not to say"]
+  ];
 
   /* ====== NACIONALIDADES Y CÓDIGOS ====== */
   var PAISES = [
@@ -509,13 +539,13 @@
     es:{
       eyebrow:"Parque Nacional Torotoro · Bolivia",
       titulo:"Formulario Visitantes · Guías Torotoro",
-      bajada:"Registra a tu grupo. Si eres el primero, presiona \u00abSoy el jefe de grupo\u00bb para generar un c\u00f3digo. Si ya tienes un c\u00f3digo, presiona \u00abYa tengo c\u00f3digo\u00bb para unirte a tu grupo. Mejor es no olvidar tu c\u00f3digo.",
+      bajada:"Registra a tu grupo. Si eres el primero, \ud83d\udc49 presiona \u00abSOY JEFE DE GRUPO\u00bb para generar un c\u00f3digo y compartirlo. Si ya tienes un c\u00f3digo, \ud83d\udc49 presiona \u00abYA TENGO GRUPO\u00bb para unirte al grupo. No olvides tu c\u00f3digo.",
       consulta:"Cualquier consulta, comuníquese al número 74359152.",
       tuGrupo:"Tu grupo",
-      modoNuevo:"Soy el jefe de grupo",
-      modoUnirme:"Ya tengo código",
+      modoNuevo:"SOY JEFE DE GRUPO",
+      modoUnirme:"YA TENGO GRUPO",
       lCodigo:"Código de grupo (o solo los últimos números)",
-      cupo:"Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.",
+      cupo:"Hasta 6+ personas pueden registrarse en un mismo grupo.",
       eCodigoVacio:"Escribe el código de grupo.",
       eCodigoNoExiste:"Ese código no existe. Revísalo con tu grupo.",
       eGrupoLleno:"Ese grupo ya tiene 7 personas. Usa un código nuevo.",
@@ -538,12 +568,15 @@
       lDocumento:"Documento o pasaporte",
       lNacionalidad:"Nacionalidad",
       lEdad:"Edad",
+      lGenero:"Género",
+      elegir:"Elegir…",
+      eGenero:"Elige una opción.",
       lCorreo:"Correo",
       lTelefono:"Teléfono",
       opcional:"(opcional)",
       pNombre:"Nombre y apellidos",
       pDocumento:"Número de CI o pasaporte",
-      pNacionalidad:"Boliviana, Argentina, Francesa…",
+      pNacionalidad:"Boliviana…",
       pCorreo:"nombre@correo.com",
       pTelefono:"Con código de país",
       eNombre:"Escribe el nombre completo.",
@@ -557,13 +590,13 @@
     en:{
       eyebrow:"Torotoro National Park · Bolivia",
       titulo:"Visitor Form · Torotoro Guides",
-      bajada:"Register your group. If you are the first, tap \u00abI'm the group leader\u00bb to generate a code. If you already have a code, tap \u00abI have a code\u00bb to join your group. Better not to forget your code.",
+      bajada:"Register your group. If you are the first, \ud83d\udc49 tap \u00abI'M THE GROUP LEADER\u00bb to generate a code and share it. If you already have a code, \ud83d\udc49 tap \u00abI HAVE A GROUP\u00bb to join the group. Don't forget your code.",
       consulta:"Any questions, call 74359152.",
       tuGrupo:"Your group",
-      modoNuevo:"I'm the group leader",
-      modoUnirme:"I have a code",
+      modoNuevo:"I'M THE GROUP LEADER",
+      modoUnirme:"I HAVE A GROUP",
       lCodigo:"Group code (or just the last digits)",
-      cupo:"Up to 6+ people per code. Each one can register from their own device.",
+      cupo:"Up to 6+ people can register in the same group.",
       eCodigoVacio:"Enter the group code.",
       eCodigoNoExiste:"That code does not exist. Check it with your group.",
       eGrupoLleno:"That group already has 7 people. Use a new code.",
@@ -586,12 +619,15 @@
       lDocumento:"ID or passport",
       lNacionalidad:"Nationality",
       lEdad:"Age",
+      lGenero:"Gender",
+      elegir:"Choose…",
+      eGenero:"Choose an option.",
       lCorreo:"Email",
       lTelefono:"Phone",
       opcional:"(optional)",
       pNombre:"First and last name",
       pDocumento:"ID or passport number",
-      pNacionalidad:"Bolivian, Argentine, French…",
+      pNacionalidad:"Bolivian…",
       pCorreo:"name@email.com",
       pTelefono:"With country code",
       eNombre:"Enter the full name.",
@@ -623,8 +659,9 @@
       campo("nombre","text","lNombre","pNombre","eNombre") +
       campo("documento","text","lDocumento","pDocumento","eDocumento") +
       '<div class="fila">' +
-        campo("nacionalidad","text","lNacionalidad","pNacionalidad","eNacionalidad") +
-        campo("edad","number","lEdad","","eEdad") +
+        '<div class="c-nac">' + campo("nacionalidad","text","lNacionalidad","pNacionalidad","eNacionalidad") + '</div>' +
+        '<div class="c-edad">' + campo("edad","number","lEdad","","eEdad") + '</div>' +
+        '<div class="c-gen">' + campoSelect("genero","lGenero","eGenero") + '</div>' +
       '</div>' +
       campo("correo","email","lCorreo","pCorreo","eCorreo",true) +
       campo("telefono","tel","lTelefono","pTelefono","",true);
@@ -654,6 +691,14 @@
     contenedor.appendChild(bloque);
     renumerar();
     return bloque;
+  }
+
+  function campoSelect(clave, etiqueta, error){
+    return '<div class="campo">' +
+      '<label data-l="' + etiqueta + '"></label>' +
+      '<select data-campo="' + clave + '" data-opciones="' + clave + '" aria-invalid="false"></select>' +
+      '<span class="aviso-campo" data-e="' + (error||"") + '"></span>' +
+    '</div>';
   }
 
   function campo(clave, tipo, etiqueta, marcador, error, opcional){
@@ -731,6 +776,21 @@
       var clave = el.getAttribute("data-p");
       el.placeholder = clave ? t(clave) : "";
     });
+    document.querySelectorAll("select[data-opciones]").forEach(function(sel){
+      var previo = sel.value;
+      sel.innerHTML = "";
+      var vacia = document.createElement("option");
+      vacia.value = "";
+      vacia.textContent = t("elegir");
+      sel.appendChild(vacia);
+      GENEROS.forEach(function(g){
+        var o = document.createElement("option");
+        o.value = g[0];
+        o.textContent = (idioma === "en") ? g[2] : g[1];
+        sel.appendChild(o);
+      });
+      sel.value = previo;
+    });
     document.querySelectorAll("[data-e]").forEach(function(el){
       var clave = el.getAttribute("data-e");
       el.textContent = clave ? t(clave) : "";
@@ -799,7 +859,7 @@
 
     contenedor.querySelectorAll(".persona").forEach(function(bloque){
       var p = {};
-      bloque.querySelectorAll("input").forEach(function(inp){
+      bloque.querySelectorAll("input,select").forEach(function(inp){
         var clave = inp.getAttribute("data-campo");
         if(clave === "nombre") inp.value = mayusculaInicial(inp.value.trim());
         var valor = inp.value.trim();
@@ -814,6 +874,7 @@
           if(isNaN(n) || n < 1 || n > 99) mal = true;
         }
         if(clave === "correo" && valor !== "" && valor.indexOf("@") < 1) mal = true;
+        if(clave === "genero" && valor === "") mal = true;
 
         inp.setAttribute("aria-invalid", mal ? "true" : "false");
         if(mal){
