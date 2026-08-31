@@ -549,6 +549,7 @@
       eCodigoVacio:"Escribe el código de grupo.",
       eCodigoNoExiste:"Ese código no existe. Revísalo con tu grupo.",
       eGrupoLleno:"Ese grupo ya tiene 7 personas. Usa un código nuevo.",
+      eExpirado:"Ese código es de otro día y ya venció. Presiona «SOY JEFE DE GRUPO» para generar uno nuevo.",
       eDuplicado1:"ya se registró el",
       eDuplicado2:"Podrá registrarse de nuevo a partir del",
       eDuplicadoAyuda:"Si es un error, consulta en la oficina de guías.",
@@ -600,6 +601,7 @@
       eCodigoVacio:"Enter the group code.",
       eCodigoNoExiste:"That code does not exist. Check it with your group.",
       eGrupoLleno:"That group already has 7 people. Use a new code.",
+      eExpirado:"That code is from another day and has expired. Tap «I\u2019M THE GROUP LEADER» to get a new one.",
       eDuplicado1:"already registered on",
       eDuplicado2:"Can register again from",
       eDuplicadoAyuda:"If this is a mistake, ask at the guides office.",
@@ -924,6 +926,8 @@
         errorCodigo("eCodigoNoExiste");
       } else if(data && data.motivo === "lleno"){
         errorCodigo("eGrupoLleno");
+      } else if(data && data.motivo === "expirado"){
+        errorCodigo("eExpirado");
       } else if(data && data.motivo === "duplicado"){
         avisoGeneral.innerHTML =
           "<strong>" + data.nombre + "</strong> " + t("eDuplicado1") + " " + data.fecha + ".<br>" +
