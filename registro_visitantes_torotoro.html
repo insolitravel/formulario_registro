@@ -74,9 +74,17 @@
     margin:10px auto 0;
     font-size:14.5px;
     color:#E8F1D8;
-    max-width:44ch;
+    max-width:52ch;
+    font-size:14px;
+    line-height:1.5;
+    font-style:italic;
+    text-align:justify;
+    text-align-last:center;
+    hyphens:auto;
   }
   header .consulta{
+    font-style:normal;
+    text-align:center;
     margin-top:8px;
     font-size:12.5px;
     color:var(--lima-clara);
@@ -370,8 +378,8 @@
   <header>
     <p class="eyebrow" data-t="eyebrow">Parque Nacional Torotoro · Bolivia</p>
     <h1 data-t="titulo">Formulario Visitantes · Guías Torotoro</h1>
-    <p data-t="bajada">Registra a todo tu grupo una sola vez. Al terminar recibes un código que das a tu guía.</p>
-    <p class="consulta" data-t="consulta">Consulta al número 74359152</p>
+    <p data-t="bajada"></p>
+    <p class="consulta" data-t="consulta"></p>
     <div class="idiomas" role="group" aria-label="Idioma">
       <button type="button" data-idioma="es" aria-pressed="true">ESPAÑOL</button>
       <button type="button" data-idioma="en" aria-pressed="false">ENGLISH</button>
@@ -384,8 +392,8 @@
     <div class="grupo">
       <h2 data-t="tuGrupo">Tu grupo</h2>
       <div class="modo" role="group">
-        <button type="button" id="btnNuevo" data-t="modoNuevo" aria-pressed="true">Soy el primero del grupo</button>
-        <button type="button" id="btnUnirme" data-t="modoUnirme" aria-pressed="false">Ya tengo un código</button>
+        <button type="button" id="btnNuevo" data-t="modoNuevo" aria-pressed="true">Soy el jefe de grupo</button>
+        <button type="button" id="btnUnirme" data-t="modoUnirme" aria-pressed="false">Ya tengo código</button>
       </div>
       <div class="campo" id="campoCodigo">
         <label for="inputCodigo" data-t="lCodigo">Código de grupo</label>
@@ -501,16 +509,19 @@
     es:{
       eyebrow:"Parque Nacional Torotoro · Bolivia",
       titulo:"Formulario Visitantes · Guías Torotoro",
-      bajada:"Registra a todo tu grupo una sola vez. Al terminar recibes un código que das a tu guía.",
-      consulta:"Consulta al número 74359152",
+      bajada:"Registra a tu grupo. Si eres el primero, presiona \u00abSoy el jefe de grupo\u00bb para generar un c\u00f3digo. Si ya tienes un c\u00f3digo, presiona \u00abYa tengo c\u00f3digo\u00bb para unirte a tu grupo. Mejor es no olvidar tu c\u00f3digo.",
+      consulta:"Cualquier consulta, comuníquese al número 74359152.",
       tuGrupo:"Tu grupo",
-      modoNuevo:"Soy el primero del grupo",
-      modoUnirme:"Ya tengo un código",
+      modoNuevo:"Soy el jefe de grupo",
+      modoUnirme:"Ya tengo código",
       lCodigo:"Código de grupo (o solo los últimos números)",
       cupo:"Hasta 6+ personas por código. Cada una puede registrarse desde su propio dispositivo.",
       eCodigoVacio:"Escribe el código de grupo.",
       eCodigoNoExiste:"Ese código no existe. Revísalo con tu grupo.",
       eGrupoLleno:"Ese grupo ya tiene 7 personas. Usa un código nuevo.",
+      eDuplicado1:"ya se registró el",
+      eDuplicado2:"Podrá registrarse de nuevo a partir del",
+      eDuplicadoAyuda:"Si es un error, consulta en la oficina de guías.",
       pieCodigoNuevo:"Comparte este código con tu grupo para que se registren desde su celular.",
       enGrupo:"personas en este grupo",
       agregar:"+ Agregar otra persona",
@@ -546,16 +557,19 @@
     en:{
       eyebrow:"Torotoro National Park · Bolivia",
       titulo:"Visitor Form · Torotoro Guides",
-      bajada:"Register your whole group once. At the end you get a code to give your guide.",
-      consulta:"Questions? Call 74359152",
+      bajada:"Register your group. If you are the first, tap \u00abI'm the group leader\u00bb to generate a code. If you already have a code, tap \u00abI have a code\u00bb to join your group. Better not to forget your code.",
+      consulta:"Any questions, call 74359152.",
       tuGrupo:"Your group",
-      modoNuevo:"I'm the first in the group",
-      modoUnirme:"I already have a code",
+      modoNuevo:"I'm the group leader",
+      modoUnirme:"I have a code",
       lCodigo:"Group code (or just the last digits)",
       cupo:"Up to 6+ people per code. Each one can register from their own device.",
       eCodigoVacio:"Enter the group code.",
       eCodigoNoExiste:"That code does not exist. Check it with your group.",
       eGrupoLleno:"That group already has 7 people. Use a new code.",
+      eDuplicado1:"already registered on",
+      eDuplicado2:"Can register again from",
+      eDuplicadoAyuda:"If this is a mistake, ask at the guides office.",
       pieCodigoNuevo:"Share this code with your group so they can register from their phones.",
       enGrupo:"people in this group",
       agregar:"+ Add another person",
@@ -849,6 +863,13 @@
         errorCodigo("eCodigoNoExiste");
       } else if(data && data.motivo === "lleno"){
         errorCodigo("eGrupoLleno");
+      } else if(data && data.motivo === "duplicado"){
+        avisoGeneral.innerHTML =
+          "<strong>" + data.nombre + "</strong> " + t("eDuplicado1") + " " + data.fecha + ".<br>" +
+          t("eDuplicado2") + " " + data.habilitado + ".<br>" +
+          '<span style="font-weight:400;">' + t("eDuplicadoAyuda") + "</span>";
+        avisoGeneral.classList.add("visible");
+        avisoGeneral.scrollIntoView({ block:"center" });
       } else {
         throw new Error(data && data.error ? data.error : "sin respuesta");
       }
